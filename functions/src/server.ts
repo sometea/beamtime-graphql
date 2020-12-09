@@ -7,7 +7,7 @@ const typeDefs = gql`
         author: String
         title: String
         body: String
-        date: Int
+        date: String
     }
     type Query {
         articles: [Article]
