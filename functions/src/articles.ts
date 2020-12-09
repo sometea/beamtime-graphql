@@ -12,7 +12,6 @@ export interface Article {
 }
 
 function parseArticle(data: any, id: any): Article {
-    console.log(data);
     return {
         date: data.date?.toMillis()?.toString() || Date.now().toString(),
         title: data.title || '',
@@ -34,4 +33,10 @@ export async function addArticle(parent: any, args: { article: Article }) {
     const { article } = args;
     const result = await db.collection('articles').add(article);
     return { ...article, id: result.id };
+}
+
+export async function deleteArticle(parent: any, args: { id: string }) {
+    const { id } = args;
+    await db.collection('articles').doc(id).delete();
+    return id;
 }
