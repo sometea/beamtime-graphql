@@ -8,21 +8,30 @@ export interface Article {
     title: string;
     author: string;
     body: string;
+    id: string;
 }
 
-function parseArticle(data: any): Article {
+function parseArticle(data: any, id: any): Article {
+    console.log(data);
     return {
         date: data.date?.toMillis()?.toString() || Date.now().toString(),
         title: data.title || '',
         author: data.author || '',
         body: data.body || '',
+        id: id || '-1',
     }
 }
 
 export async function getArticles() {
     const articles: Article[] = [];
     const articlesRef = db.collection('articles');
-    const snapshot = await articlesRef.get();
-    snapshot.forEach(doc => articles.push(parseArticle(doc.data())));
+    const snapshot = await articlesRef.limit(30).get();
+    snapshot.forEach(doc => articles.push(parseArticle(doc.data(), doc.id)));
     return articles;
+}
+
+export async function addArticle(parent: any, args: { article: Article }) {
+    const { article } = args;
+    const result = await db.collection('articles').add(article);
+    return { ...article, id: result.id };
 }

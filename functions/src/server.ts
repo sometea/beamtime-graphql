@@ -1,6 +1,7 @@
 import { ApolloServer, gql } from 'apollo-server-express';
 import express from 'express';
-import { getArticles } from './articles';
+
+import { addArticle, getArticles } from './articles';
 
 const typeDefs = gql`
     type Article {
@@ -8,9 +9,18 @@ const typeDefs = gql`
         title: String
         body: String
         date: String
+        id: ID
     }
     type Query {
         articles: [Article]
+    }
+    type Mutation {
+        addArticle(article: ArticleInput): Article
+    }
+    input ArticleInput {
+        author: String
+        title: String
+        body: String
     }
 `;
 
@@ -18,6 +28,9 @@ const resolvers = {
     Query: {
         articles: getArticles,
     },
+    Mutation: {
+        addArticle: addArticle,
+    }
 }
 
 export const app = express();
